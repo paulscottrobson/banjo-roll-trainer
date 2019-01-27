@@ -18,27 +18,6 @@ window.onload = function() {
     window.addEventListener("resize",resizeGame);
     }
 
-
-class PreloaderScene extends Phaser.Scene {
-    constructor() {
-        super("PreloadScene");
-    }
-    preload() {
-        this.load.atlas("sprites","assets/sprites/sprites.png","assets/sprites/sprites.json");
-        for (var sound of ["1","2","3","4","5","metronome"]) {
-            this.load.audio(sound,["assets/sounds/"+sound+".ogg",
-                                   "assets/sounds/"+sound+".mp3"]);
-        }
-        for (var font of ["dfont","font"]) {
-            this.load.bitmapFont(font,"assets/fonts/"+font+".png",
-                                            "assets/fonts/"+font+".fnt");
-        }
-    }
-    create() {
-        this.scene.start("MainScene");
-    }
-}
-
 class MainScene extends Phaser.Scene {
     constructor() {
         super("MainScene");
@@ -46,12 +25,24 @@ class MainScene extends Phaser.Scene {
     create() {
         this.add.image(110,110,"sprites","row1");
         this.add.bitmapText(110,110,"dfont","hello",32,0);
+        this.add.existing(new Button(this,64,64));
         var ts = this.sound.add("1");
         ts.play();
     }
 }
 
-
+class Button extends Phaser.GameObjects.Container {
+    constructor(scene,x,y,width=gameOptions.screenWidth/10,height=gameOptions.screenHeight/10) {
+        super(scene,x,y);
+        var bgr = scene.add.image(0,0,"sprites","button");
+        bgr.displayWidth = width;bgr.displayHeight = height;
+        bgr.tint = 0xC0C0C0;
+        var btn = scene.add.image(0,0,"sprites","i_increase");
+        btn.displayWidth = width*0.8;btn.displayHeight = height*0.8;
+        btn.tint = 0x404040;
+        this.add(bgr);this.add(btn);
+    }
+}
 
 function resizeGame() {
     var canvas = document.querySelector("canvas");
